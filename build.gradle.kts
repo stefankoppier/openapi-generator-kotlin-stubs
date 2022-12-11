@@ -25,6 +25,40 @@ publishing {
         create<MavenPublication>(repository) {
             from(components["kotlin"])
             artifactId = repository
+
+            pom {
+                name.set("$group:$repository")
+                description.set("Generate WireMock stubs in Kotlin from an OpenAPI specification")
+                url.set("https://$github")
+
+
+                developers {
+                    developer {
+                        id.set(organization)
+                        name.set("Stefan Koppier")
+                        email.set("stefan.koppier@outlook.com")
+                        url.set("https://github.com/StefanKoppier")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:git@$github.git")
+                    developerConnection.set("scm:git:git@$github.git")
+                    url.set("https://$github/tree/main")
+                }
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+
+                issueManagement {
+                    system.set("GitHub")
+                    url.set("https://$github/issues")
+                }
+            }
         }
     }
 }
