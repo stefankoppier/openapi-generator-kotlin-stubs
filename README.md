@@ -1,8 +1,8 @@
 # OpenAPI generator kotlin-stubs
 Generate Kotlin [WireMock](https://wiremock.org/) stubs from an OpenAPI specification.
 
-## Usage
-First, add the dependency to the classpath of which OpenAPI generator executes.
+## Usage with Gradle
+First, add the dependency to the classpath of which OpenAPI generator executes
 ```kotlin
 buildscript {
     repositories {
