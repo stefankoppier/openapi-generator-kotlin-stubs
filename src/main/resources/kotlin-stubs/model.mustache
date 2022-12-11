@@ -1,0 +1,12 @@
+package {{package}}
+
+import io.github.stefankoppier.builder.dsl.*
+import io.github.stefankoppier.builder.dsl.containers.*
+import io.github.stefankoppier.builder.dsl.primitives.*
+
+{{#models}}
+{{#model}}
+{{#isEnum}}{{>model-enum}}{{/isEnum}}
+{{^isEnum}}{{>model-object}}{{/isEnum}}
+{{/model}}
+{{/models}}

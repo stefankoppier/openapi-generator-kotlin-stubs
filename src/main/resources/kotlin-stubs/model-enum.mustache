@@ -1,0 +1,20 @@
+enum class {{classname}} {
+    {{#allowableValues}}
+    {{#enumVars}}
+    {{#lambda.uppercase}}{{name}}{{/lambda.uppercase}}{{^-last}},{{/-last}}{{#-last}};{{/-last}}
+    {{/enumVars}}
+    {{/allowableValues}}
+
+    companion object {
+        fun of(transform: {{classname}}Builder.() -> {{classname}}Builder = { {{classname}}Builder() }): {{classname}} {
+            return transform({{classname}}Builder())()
+        }
+    }
+}
+
+class {{classname}}Builder: EnumBuilder<{{classname}}>() {
+
+    override fun allValues(): Array<{{classname}}> {
+        return {{classname}}.values()
+    }
+}

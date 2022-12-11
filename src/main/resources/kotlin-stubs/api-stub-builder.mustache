@@ -1,0 +1,34 @@
+{{#operations}}
+{{#operation}}
+class {{>api-stub-builder-type}} internal constructor(val stub: MappingBuilder)
+    : AbstractStubBuilder() {
+{{#responses}}
+
+    /**
+     *
+     */
+    fun {{#lambda.readableHttpCode}}{{code}}{{/lambda.readableHttpCode}}({{#baseType}}result: {{>api-stub-builder-result-type}}{{/baseType}}) {
+        {{#baseType}}
+        {{#lambda.indented_8}}{{>api-stub-builder-adapter}}{{/lambda.indented_8}}
+        {{/baseType}}
+        stubFor(stub.willReturn(WireMock.{{#lambda.readableHttpCode}}{{code}}{{/lambda.readableHttpCode}}({{#baseType}}adapter.toJson(result){{/baseType}})))
+    }
+{{/responses}}
+
+    /**
+     *
+     */
+    fun status(status: Int) {
+        stubFor(stub.willReturn(WireMock.status(status)))
+    }
+
+    /**
+     *
+     */
+    fun response(builder: ResponseDefinitionBuilder) {
+        stubFor(stub.willReturn(builder))
+    }
+}
+
+{{/operation}}
+{{/operations}}

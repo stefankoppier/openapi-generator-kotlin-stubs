@@ -1,0 +1,49 @@
+/**
+{{#hasDescription}}
+ * {{description}}
+{{/hasDescription}}
+ *
+{{#vars}}
+ * @param {{name}} {{description}}
+{{/vars}}
+ */
+{{#isDeprecated}}
+@Deprecated(message = "This schema is deprecated.")
+{{/isDeprecated}}
+data class {{classname}}(
+{{#vars}}
+    var {{name}}: {{>variable-datatype}}{{^-last}},{{/-last}}{{#-last}}) { {{/-last}}
+{{/vars}}
+
+    companion object {
+        fun of(transform: {{classname}}Builder.() -> {{classname}}Builder = { {{classname}}Builder() }): {{classname}} {
+            return transform({{classname}}Builder())()
+        }
+    }
+}
+
+{{#isDeprecated}}
+    @Deprecated(message = "This builder is deprecated.")
+{{/isDeprecated}}
+class {{classname}}Builder : BuilderDsl<{{classname}}> {
+
+{{#vars}}
+    private var {{name}} = {{>dsl-builder-type}}({{>dsl-builder-argument}}){{>dsl-builder-constraints}}
+{{/vars}}
+
+    override operator fun invoke(): {{classname}} {
+        return {{classname}}(
+        {{#vars}}
+            {{name}} = {{name}}.invoke(){{^-last}},{{/-last}}
+        {{/vars}}
+        )
+    }
+
+{{#vars}}
+    fun {{name}}(transform: {{>dsl-builder-type}}.() -> {{>dsl-builder-type}} = { {{>dsl-builder-type}}({{>dsl-builder-argument}}) }): {{classname}}Builder {
+        {{name}} = transform({{>dsl-builder-type}}({{>dsl-builder-argument}}))
+        return this
+    }
+
+{{/vars}}
+}

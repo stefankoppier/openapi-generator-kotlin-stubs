@@ -1,0 +1,19 @@
+package {{apiPackage}}
+
+import com.github.tomakehurst.wiremock.client.MappingBuilder
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.stubFor
+import com.github.tomakehurst.wiremock.matching.AnythingPattern
+import com.github.tomakehurst.wiremock.matching.StringValuePattern
+import com.squareup.moshi.Types
+import com.squareup.moshi.JsonAdapter
+import demo.api.mocks.internal.AbstractStub
+import demo.api.mocks.internal.AbstractStubBuilder
+{{#imports}}import {{import}} {{/imports}}
+
+{{#operations}}
+{{>api-stub}}
+{{/operations}}
+
+{{>api-stub-builder}}

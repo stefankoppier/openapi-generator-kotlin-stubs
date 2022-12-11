@@ -1,0 +1,7 @@
+package {{apiPackage}}.internal
+
+abstract class AbstractStub() {
+    protected fun parameterized(url: String, vararg parameters: Any): String { // TODO: fix the regex to any http encoded string
+        return parameters.fold(url) { acc, parameter -> acc.replaceFirst(Regex("\\{[a-zA-Z\\-_]+\\}"), parameter.toString()) }
+    }
+}

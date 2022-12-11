@@ -1,0 +1,29 @@
+/**
+ * Stubbing API interface for {{classname}}.
+ *
+ * This class can generate stubs and inject these in WireMock for the supported HTTP methods of the path with the
+ * corresponding status codes.
+ */
+class {{classname}}Stub : AbstractStub() {
+{{#operation}}
+
+    /**
+     * Construct a stub builder for a '{{httpMethod}}' request.
+     {{#hasParams}}
+     *
+     {{/hasParams}}
+     {{#allParams}}
+     * @param {{paramName}} {{description}}
+     {{/allParams}}
+     *
+     * @return An instance of [{{>api-stub-builder-type}}]
+     */
+    {{#isDeprecated}}
+    @Deprecated(message = "This operation has been deprecated")
+    {{/isDeprecated}}
+    fun {{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}({{>api-stub-builder-parameters}}): {{>api-stub-builder-type}} {
+        val path = parameterized("{{path}}"{{#pathParams}}{{^last}}, {{/last}}{{paramName}}{{/pathParams}})
+        return {{>api-stub-builder-type}}(WireMock.{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}(path){{>api-stub-query-arguments}})
+    }
+{{/operation}}
+}

@@ -1,0 +1,10 @@
+package {{apiPackage}}.internal
+
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+
+abstract class AbstractStubBuilder() {
+    protected val moshi: Moshi = Moshi.Builder()
+        .addLast(KotlinJsonAdapterFactory())
+        .build()
+}
