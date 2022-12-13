@@ -1,1 +1,1 @@
-{{#isPathParam}}{{dataType}}{{/isPathParam}}{{#isQueryParam}}StringValuePattern = AnythingPattern(){{/isQueryParam}}
+{{#isPathParam}}{{#isArray}}List<{{baseType}}>{{/isArray}}{{^isArray}}{{dataType}}{{/isArray}}{{/isPathParam}}{{#isQueryParam}}StringValuePattern = AnythingPattern(){{/isQueryParam}}

@@ -8,12 +8,63 @@ import com.github.tomakehurst.wiremock.matching.AnythingPattern
 import com.github.tomakehurst.wiremock.matching.StringValuePattern
 import com.squareup.moshi.Types
 import com.squareup.moshi.JsonAdapter
-import demo.api.mocks.internal.AbstractStub
-import demo.api.mocks.internal.AbstractStubBuilder
-{{#imports}}import {{import}} {{/imports}}
+
+import {{apiPackage}}.internal.*
+{{#imports}}
+import {{import}}
+{{/imports}}
 
 {{#operations}}
-{{>api-stub}}
-{{/operations}}
+/**
+ * Stubbing API interface for {{classname}}.
+ *
+ * This class can generate stubs and inject these in WireMock for the supported HTTP methods of the path with the
+ * corresponding status codes.
+ */
+class {{classname}}Stub : AbstractStub() {
+{{#operation}}
 
-{{>api-stub-builder}}
+    /**
+     * Construct a stub builder for a '{{httpMethod}}' request.
+     {{#hasParams}}
+     *
+     {{/hasParams}}
+     {{#allParams}}
+     * @param {{paramName}} {{description}}
+     {{/allParams}}
+     *
+     * @return An instance of [{{>api-stub-builder-type}}]
+     */
+    {{#isDeprecated}}
+    @Deprecated(message = "This operation has been deprecated")
+    {{/isDeprecated}}
+    fun {{operationId}}({{>api-stub-builder-parameters}}): {{>api-stub-builder-type}} {
+        val path = parameterized("{{path}}"{{#pathParams}}{{^last}}, {{/last}}{{paramName}}{{/pathParams}})
+        return {{>api-stub-builder-type}}(WireMock.{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}(path){{>api-stub-query-arguments}})
+    }
+
+    /** Stub generation interface for [{{operationId}}]. */
+    {{#isDeprecated}}
+    @Deprecated(message = "This operation has been deprecated")
+    {{/isDeprecated}}
+    class {{>api-stub-builder-type}} internal constructor(stub: MappingBuilder) : AbstractStubBuilder(stub) {
+    {{#responses}}
+
+        /**
+         * Inject the stub in WireMock with a http '{{code}}' response code.
+         {{#baseType}}
+         *
+         * @param result The body of the response.
+         {{/baseType}}
+         */
+        fun {{#lambda.readableHttpCode}}{{code}}{{/lambda.readableHttpCode}}({{#baseType}}body: {{>api-stub-builder-result-type}}{{/baseType}}) {
+            {{#baseType}}
+            {{#lambda.indented_12}}{{>api-stub-builder-adapter}}{{/lambda.indented_12}}
+            {{/baseType}}
+            stubFor(stub.willReturn(code({{code}}){{#baseType}}.withBody(adapter.toJson(body)){{/baseType}}))
+        }
+    {{/responses}}
+    }
+{{/operation}}
+}
+{{/operations}}

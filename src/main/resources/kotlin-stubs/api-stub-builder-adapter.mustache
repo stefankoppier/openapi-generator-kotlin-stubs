@@ -1,7 +1,7 @@
-{{^returnContainer}}
-val adapter = moshi.adapter({{returnType}}::class.java)
-{{/returnContainer}}
+{{^isArray}}
+val adapter = moshi.adapter({{dataType}}::class.java)
+{{/isArray}}
 {{#isArray}}
-val type = (Types.newParameterizedType(List::class.java, {{returnType}}::class.java))
-val adapter: JsonAdapter<List<{{returnType}}>> = moshi.adapter(type)
+val type = (Types.newParameterizedType(List::class.java, {{dataType}}::class.java))
+val adapter: JsonAdapter<List<{{dataType}}>> = moshi.adapter(type)
 {{/isArray}}

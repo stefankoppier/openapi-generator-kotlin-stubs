@@ -6,11 +6,21 @@ import java.io.Writer
 
 class ReadableCodeLambda : Mustache.Lambda {
     override fun execute(fragment: Template.Fragment, writer: Writer) {
-        writer.write(
-            when (fragment.execute()) {
-                "200" -> "ok"
-                "404" -> "notFound"
-                else -> throw IllegalArgumentException("Could not map '$fragment' to a http code")
-            })
+        writer.write(map(fragment.execute()))
+    }
+
+    private fun map(code: String): String {
+        return when (code) {
+            "200" -> "ok"
+            "201" -> "created"
+            "204" -> "noContent"
+            "400" -> "badRequest"
+            "401" -> "unauthorized"
+            "403" -> "forbidden"
+            "404" -> "notFound"
+            "500" -> "serverError"
+            "503" -> "serviceUnavailable"
+            else -> throw IllegalArgumentException("Could not map 'code' to a http code")
+        }
     }
 }

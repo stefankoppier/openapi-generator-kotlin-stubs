@@ -1,7 +1,7 @@
-enum class {{classname}} {
+enum class {{classname}}(val value: String) {
     {{#allowableValues}}
     {{#enumVars}}
-    {{#lambda.uppercase}}{{name}}{{/lambda.uppercase}}{{^-last}},{{/-last}}{{#-last}};{{/-last}}
+    {{name}}({{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
     {{/enumVars}}
     {{/allowableValues}}
 
@@ -9,6 +9,10 @@ enum class {{classname}} {
         fun of(transform: {{classname}}Builder.() -> {{classname}}Builder = { {{classname}}Builder() }): {{classname}} {
             return transform({{classname}}Builder())()
         }
+    }
+
+    override fun toString(): String {
+        return value
     }
 }
 

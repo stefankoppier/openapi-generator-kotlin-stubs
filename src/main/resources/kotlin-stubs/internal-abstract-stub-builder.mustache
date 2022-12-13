@@ -1,10 +1,39 @@
 package {{apiPackage}}.internal
 
+import com.github.tomakehurst.wiremock.client.MappingBuilder
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.net.HttpURLConnection.*
 
-abstract class AbstractStubBuilder() {
+abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
     protected val moshi: Moshi = Moshi.Builder()
         .addLast(KotlinJsonAdapterFactory())
         .build()
+
+
+    protected fun code(code: Int): ResponseDefinitionBuilder {
+        return when(code) {
+            0       -> WireMock.status(code)
+            HTTP_OK -> WireMock.ok()
+            else    -> throw IllegalArgumentException("Unknown http code $code")
+        }
+    }
+
+
+    /**
+     *
+     */
+    fun status(status: Int) {
+        stubFor(stub.willReturn(WireMock.status(status)))
+    }
+
+    /**
+     *
+     */
+    fun response(builder: ResponseDefinitionBuilder) {
+        stubFor(stub.willReturn(builder))
+    }
 }

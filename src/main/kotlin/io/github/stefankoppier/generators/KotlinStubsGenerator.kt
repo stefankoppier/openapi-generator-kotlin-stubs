@@ -2,7 +2,7 @@ package io.github.stefankoppier.generators
 
 import com.google.common.collect.ImmutableMap
 import com.samskivert.mustache.Mustache
-import io.swagger.v3.oas.models.Operation
+import io.swagger.v3.oas.models.OpenAPI
 import java.io.File
 import org.openapitools.codegen.*
 import org.openapitools.codegen.languages.AbstractKotlinCodegen
@@ -33,24 +33,6 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
         additionalProperties["apiVersion"] = apiVersion
 
         typeMapping["array"] = "kotlin.collections.List"
-        typeMapping["string"] = "String"
-        typeMapping["boolean"] = "Boolean"
-        typeMapping["integer"] = "Int"
-        typeMapping["float"] = "Float"
-        typeMapping["long"] = "Long"
-        typeMapping["double"] = "Double"
-        typeMapping["ByteArray"] = "ByteArray"
-
-        languageSpecificPrimitives.addAll(
-            listOf(
-                "String",
-                "Boolean",
-                "Int",
-                "Float",
-                "Long",
-                "Double",
-                "ByteArray",
-            ))
     }
 
     override fun processOpts() {
@@ -64,30 +46,11 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
             ))
     }
 
-    override fun addOperationToGroup(
-        tag: String?,
-        resourcePath: String?,
-        operation: Operation?,
-        co: CodegenOperation?,
-        operations: MutableMap<String, MutableList<CodegenOperation>>?
-    ) {
-        var basePath = resourcePath!!
-        if (basePath.startsWith("/")) {
-            basePath = basePath.substring(1)
+    override fun preprocessOpenAPI(openAPI: OpenAPI) {
+        super.preprocessOpenAPI(openAPI)
+        openAPI.paths.forEach { path ->
+            path.value.readOperations().forEach { operation -> operation.responses.remove("default") }
         }
-        val pos = basePath.indexOf("/")
-        if (pos > 0) {
-            basePath = basePath.substring(0, pos)
-        }
-
-        if (basePath.isEmpty()) {
-            basePath = "default"
-        } else {
-            co!!.subresourceOperation = co.path.isNotEmpty()
-        }
-        val opList = operations!!.computeIfAbsent(basePath) { ArrayList() }
-        opList.add(co!!)
-        co.baseName = basePath
     }
 
     override fun postProcessAllModels(objects: MutableMap<String, ModelsMap>): MutableMap<String, ModelsMap> {
@@ -100,7 +63,6 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
                             override fun setReturnType(type: String) {
                                 variable.dataType = type
                             }
-
                             override fun setReturnContainer(type: String) {
                                 variable.containerType = type
                             }
