@@ -12,7 +12,7 @@
 {{/isDeprecated}}
 data class {{classname}}(
 {{#vars}}
-    var {{name}}: {{>variable-datatype}}{{^-last}},{{/-last}}{{#-last}}) { {{/-last}}
+    @Json(name = "{{name}}") var {{name}}: {{>variable-datatype}}{{^-last}},{{/-last}}{{#-last}}) { {{/-last}}
 {{/vars}}
 
     companion object {
