@@ -13,25 +13,19 @@ abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
         .addLast(KotlinJsonAdapterFactory())
         .build()
 
-
-    protected fun code(code: Int): ResponseDefinitionBuilder {
-        return when(code) {
-            0       -> WireMock.status(code)
-            HTTP_OK -> WireMock.ok()
-            else    -> throw IllegalArgumentException("Unknown http code $code")
-        }
-    }
-
-
     /**
+     * Inject the stub in WireMock using [code] as the http response code.
      *
+     * @param code The http response code.
      */
     fun status(status: Int) {
         stubFor(stub.willReturn(WireMock.status(status)))
     }
 
     /**
+     * Inject the [builder] in WireMock.
      *
+     * @param builder The stub to inject.
      */
     fun response(builder: ResponseDefinitionBuilder) {
         stubFor(stub.willReturn(builder))

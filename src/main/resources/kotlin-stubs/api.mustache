@@ -50,19 +50,35 @@ class {{classname}}Stub : AbstractStub() {
     class {{>api-stub-builder-type}} internal constructor(stub: MappingBuilder) : AbstractStubBuilder(stub) {
     {{#responses}}
 
+        {{^isDefault}}
         /**
          * Inject the stub in WireMock with a http '{{code}}' response code.
          {{#baseType}}
          *
-         * @param result The body of the response.
+         * @param body The body of the response.
          {{/baseType}}
          */
         fun {{#lambda.readableHttpCode}}{{code}}{{/lambda.readableHttpCode}}({{#baseType}}body: {{>api-stub-builder-result-type}}{{/baseType}}) {
             {{#baseType}}
             {{#lambda.indented_12}}{{>api-stub-builder-adapter}}{{/lambda.indented_12}}
             {{/baseType}}
-            stubFor(stub.willReturn(code({{code}}){{#baseType}}.withBody(adapter.toJson(body)){{/baseType}}))
+            stubFor(stub.willReturn(WireMock.status({{code}}){{#baseType}}.withBody(adapter.toJson(body)){{/baseType}}))
         }
+        {{/isDefault}}
+        {{#isDefault}}
+        {{#baseType}}
+        /**
+         * Inject the stub in WireMock using [code] as the http response code.
+         *
+         * @param code The http response code.
+         * @param body The body of the response.
+         */
+        fun response(code: Int, body: {{>api-stub-builder-result-type}}) {
+            {{#lambda.indented_12}}{{>api-stub-builder-adapter}}{{/lambda.indented_12}}
+            stubFor(stub.willReturn(WireMock.status(code).withBody(adapter.toJson(body))))
+        }
+        {{/baseType}}
+        {{/isDefault}}
     {{/responses}}
     }
 {{/operation}}

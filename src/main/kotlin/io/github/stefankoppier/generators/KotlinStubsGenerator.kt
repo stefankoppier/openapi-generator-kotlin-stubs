@@ -2,7 +2,6 @@ package io.github.stefankoppier.generators
 
 import com.google.common.collect.ImmutableMap
 import com.samskivert.mustache.Mustache
-import io.swagger.v3.oas.models.OpenAPI
 import java.io.File
 import org.openapitools.codegen.*
 import org.openapitools.codegen.languages.AbstractKotlinCodegen
@@ -30,6 +29,8 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
         apiPackage = "org.openapitools.api"
         modelPackage = "org.openapitools.model"
 
+        enumPropertyNaming = CodegenConstants.ENUM_PROPERTY_NAMING_TYPE.UPPERCASE
+
         additionalProperties["apiVersion"] = apiVersion
 
         typeMapping["array"] = "kotlin.collections.List"
@@ -46,17 +47,15 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
             ))
     }
 
-    override fun preprocessOpenAPI(openAPI: OpenAPI) {
-        super.preprocessOpenAPI(openAPI)
-        openAPI.paths.forEach { path ->
-            path.value.readOperations().forEach { operation -> operation.responses.remove("default") }
-        }
+    override fun setEnumPropertyNaming(enumPropertyNamingType: String?) {
+        super.setEnumPropertyNaming(enumPropertyNamingType)
     }
 
     override fun postProcessAllModels(objects: MutableMap<String, ModelsMap>): MutableMap<String, ModelsMap> {
         super.postProcessAllModels(objects).forEach { obj ->
             obj.value.models.forEach { model: ModelMap ->
                 model.model.vars.forEach { variable ->
+                    println("Assigning type ${variable.dataType} to ${variable.name}")
                     assignDataTypes(
                         variable.dataType,
                         object : DataTypeAssigner {
@@ -127,9 +126,16 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
         } else if (type.startsWith("kotlin.collections.List")) {
             val end = type.lastIndexOf(">")
             if (end > 0) {
-                assigner.setReturnType(type.substring("kotlin.collections.List<".length, end).trim())
+                val returnType = type.substring("kotlin.collections.List<".length, end).trim()
+                assigner.setReturnType(removeKotlinPrefix(returnType))
                 assigner.setReturnContainer("List")
             }
+        } else if (type.startsWith("kotlin.")) {
+            assigner.setReturnType(removeKotlinPrefix(type))
         }
+    }
+
+    private fun removeKotlinPrefix(type: String): String {
+        return if (type.startsWith("kotlin.")) type.substring("kotlin.".length).trim() else type
     }
 }
