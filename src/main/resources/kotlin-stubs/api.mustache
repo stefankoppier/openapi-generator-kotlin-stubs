@@ -40,7 +40,10 @@ class {{classname}}Stub : AbstractStub() {
     {{/isDeprecated}}
     fun {{operationId}}({{>api-stub-builder-parameters}}): {{>api-stub-builder-type}} {
         val path = parameterized("{{path}}"{{#pathParams}}{{^last}}, {{/last}}{{paramName}}{{/pathParams}})
-        return {{>api-stub-builder-type}}(WireMock.{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}(path){{>api-stub-query-arguments}})
+        return {{>api-stub-builder-type}}(WireMock.{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}(path)
+        {{#queryParams}}
+            .withQueryParam("{{paramName}}", {{paramName}})
+        {{/queryParams}})
     }
 
     /** Stub generation interface for [{{operationId}}]. */
