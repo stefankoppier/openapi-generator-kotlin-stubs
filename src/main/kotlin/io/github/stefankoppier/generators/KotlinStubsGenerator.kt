@@ -55,7 +55,6 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
         super.postProcessAllModels(objects).forEach { obj ->
             obj.value.models.forEach { model: ModelMap ->
                 model.model.vars.forEach { variable ->
-                    println("Assigning type ${variable.dataType} to ${variable.name}")
                     assignDataTypes(
                         variable.dataType,
                         object : DataTypeAssigner {
@@ -127,15 +126,15 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
             val end = type.lastIndexOf(">")
             if (end > 0) {
                 val returnType = type.substring("kotlin.collections.List<".length, end).trim()
-                assigner.setReturnType(removeKotlinPrefix(returnType))
+                assigner.setReturnType(removePackageName(returnType))
                 assigner.setReturnContainer("List")
             }
-        } else if (type.startsWith("kotlin.")) {
-            assigner.setReturnType(removeKotlinPrefix(type))
+        } else {
+            assigner.setReturnType(removePackageName(type))
         }
     }
 
-    private fun removeKotlinPrefix(type: String): String {
-        return if (type.startsWith("kotlin.")) type.substring("kotlin.".length).trim() else type
+    private fun removePackageName(type: String): String {
+        return if (type.contains('.')) type.substring(type.lastIndexOf('.') + 1).trim() else type
     }
 }
