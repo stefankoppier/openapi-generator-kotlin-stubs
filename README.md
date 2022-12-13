@@ -35,7 +35,7 @@ The following dependencies are necessary to build the generated stubs:
 dependencies {
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
 
-    implementation("io.github.stefankoppier:kotlin-builder-dsl:0.0.1")
+    implementation("io.github.stefankoppier:kotlin-builder-dsl:0.0.2")
     implementation("com.github.tomakehurst:wiremock-jre8:2.35.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 }
