@@ -146,9 +146,9 @@ components.schemas.User:
     address:
       $ref: '#/components.schemas.Address'
 ```
-which will generate two classes: 1. a data class `User`; and 2. a `UserBuilder`.
+which will generate two classes: 1. a data class `User`; and 2. a builder `UserBuilder`.
 
-The class will have the following structure
+The first class that is generated, the data class `User`, will have the following structure
 ```kotlin
 data class User(
     @Json(name = "firstname") var firstname: String,
@@ -164,7 +164,7 @@ data class User(
     }
 }
 ```
-It consists of a mutable field for each property in the schema. And an
+consisting of a mutable field for each property in the schema. And an
 `of` function. This method can be used to invoke the builder in a more user-friendly manner.
 For example
 ```kotlin
@@ -172,9 +172,12 @@ User.of {
     firstname { constant { "Jane" } }
 }
 ```
-will generate a `User` with random properties within the constaints of
+will generate a `User` with random values within the constraints of
 the API and `firstname` set to `"Jane"`.
 
+This builder is based on the package 
+[io.github.stefankoppier:kotlin-builder-dsl](https://github.com/StefanKoppier/kotlin-builder-dsl).
+and is structured as
 ```kotlin
 class UserBuilder : BuilderDsl<User> {
 
@@ -220,8 +223,10 @@ class UserBuilder : BuilderDsl<User> {
     }
 }
 ```
+where the default value for each property is a random value within the 
+constraints of the API.
 
-with a gender as
+There is support for enums. We define the gender of an user as
 ```yaml
 components.schemas.Gender:
   type: string
@@ -229,6 +234,31 @@ components.schemas.Gender:
     - MALE
     - FEMALE
 ```
+which will also generate a data class and a builder
+```kotlin
+enum class Gender(val value: String) {
+    @Json(name = "MALE") MALE("MALE"),
+    @Json(name = "FEMALE") FEMALE("FEMALE");
+
+    companion object {
+        fun of(transform: GenderBuilder.() -> GenderBuilder = { GenderBuilder() }): Gender {
+            return transform(GenderBuilder())()
+        }
+    }
+
+    override fun toString(): String {
+        return value
+    }
+}
+
+class GenderBuilder: EnumBuilder<Gender>() {
+
+    override fun allValues(): Array<Gender> {
+        return Gender.values()
+    }
+}
+```
+
 and an address as
 ```yaml
 components.schemas.Address:
