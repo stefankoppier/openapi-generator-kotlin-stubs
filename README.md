@@ -176,7 +176,7 @@ will generate a `User` with random values within the constraints of
 the API and `firstname` set to `"Jane"`.
 
 This builder is based on the package 
-[io.github.stefankoppier:kotlin-builder-dsl](https://github.com/StefanKoppier/kotlin-builder-dsl).
+[io.github.stefankoppier:kotlin-builder-dsl](https://github.com/StefanKoppier/kotlin-builder-dsl)
 and is structured as
 ```kotlin
 class UserBuilder : BuilderDsl<User> {
@@ -261,7 +261,7 @@ class GenderBuilder: EnumBuilder<Gender>() {
 ```
 
 #### Nested Types
-and an address as
+Each `User` has an address which is defined as
 ```yaml
 components.schemas.Address:
   type: object
@@ -275,4 +275,55 @@ components.schemas.Address:
     city:
       type: string
       example: Utrecht
+```
+which will generate the following code, similar to the other schemas
+```kotlin
+data class Address(
+    @Json(name = "street") var street: String?,
+    @Json(name = "zip") var zip: String?,
+    @Json(name = "city") var city: String?) { 
+
+    companion object {
+        fun of(transform: AddressBuilder.() -> AddressBuilder = { AddressBuilder() }): Address {
+            return transform(AddressBuilder())()
+        }
+    }
+}
+
+class AddressBuilder : BuilderDsl<Address> {
+
+    private var street = StringBuilder()
+    private var zip = StringBuilder()
+    private var city = StringBuilder()
+
+    override operator fun invoke(): Address {
+        return Address(
+            street = street.invoke(),
+            zip = zip.invoke(),
+            city = city.invoke()
+        )
+    }
+
+    fun street(transform: StringBuilder.() -> StringBuilder = { StringBuilder() }): AddressBuilder {
+        street = transform(StringBuilder())
+        return this
+    }
+
+    fun zip(transform: StringBuilder.() -> StringBuilder = { StringBuilder() }): AddressBuilder {
+        zip = transform(StringBuilder())
+        return this
+    }
+
+    fun city(transform: StringBuilder.() -> StringBuilder = { StringBuilder() }): AddressBuilder {
+        city = transform(StringBuilder())
+        return this
+    }
+}
+```
+of which the builder of the `Address` can be used from within the builder
+of the `User`
+```kotlin
+User.of {
+    address { city { constant("Utrecht") } }
+}
 ```
