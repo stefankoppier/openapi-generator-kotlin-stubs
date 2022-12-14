@@ -40,3 +40,136 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 }
 ```
+
+## Example
+We have a simple API which manages users.
+
+## Paths and Operations
+Suppose we have two paths `/users` and `users/{userId}`
+```yaml
+openapi: 3.0.3
+info:
+  title: Demo API
+  version: 0.0.1
+
+paths:
+  /users:
+    $ref: '#/components.operations.Users'
+  /user/{userId}:
+    $ref: '#/components.operations.User'
+```
+which contain the following operation for `/users`
+```yaml
+components.operations.Users:
+  get:
+    responses:
+      '200':
+        content:
+          application/json:
+            schema:
+              $ref: '#/components.schemas.Ok'
+```
+and the following operation for `/user/{userId}`
+```yaml
+components.operations.User:
+  get:
+    parameters:
+      - in: path
+        name: userId
+        description: The id of the user to retrieve.
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: withAge
+        description: Includes the age of the user in the result if set to true.
+        schema:
+          type: boolean
+    responses:
+      '200':
+        content:
+          application/json:
+            schema:
+              $ref: '#/components.schemas.User'
+      '404':
+        description: User was not found.
+  post:
+    parameters:
+      - in: path
+        name: userId
+        schema:
+          type: integer
+        required: true
+    responses:
+      '200':
+        content:
+          application/json:
+            schema:
+              $ref: '#/components.schemas.User'
+```
+
+## Responses
+The response of the `/users` is defined as 
+```yaml
+components.responses.Ok:
+  type: array
+  items:
+    $ref: '#/components.schemas.User'
+```
+
+## Schemas
+We define a user as
+```yaml
+components.schemas.User:
+  type: object
+  required:
+    - firstname
+    - lastname
+    - address
+    - age
+  properties:
+    firstname:
+      type: string
+      example: Arthur
+      minLength: 1
+    lastname:
+      type: string
+      example: Dent
+      minLength: 1
+      maxLength: 30
+    nicknames:
+      type: array
+      items:
+        type: string
+    gender:
+      $ref: '#/components.schemas.Gender'
+    age:
+      type: integer
+      minimum: 0
+      example: 34
+    address:
+      $ref: '#/components.schemas.Address'
+```
+with a gender as
+```yaml
+components.schemas.Gender:
+  type: string
+  enum:
+    - MALE
+    - FEMALE
+```
+and an address as
+```yaml
+components.schemas.Address:
+  type: object
+  properties:
+    street:
+      type: string
+      example: Amsterdamsestraatweg 427
+    zip:
+      type: string
+      example: 3553 EA
+    city:
+      type: string
+      example: Utrecht
+```
