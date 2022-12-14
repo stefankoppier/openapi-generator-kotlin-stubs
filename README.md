@@ -137,10 +137,6 @@ components.schemas.User:
       example: Dent
       minLength: 1
       maxLength: 30
-    nicknames:
-      type: array
-      items:
-        type: string
     gender:
       $ref: '#/components.schemas.Gender'
     age:
@@ -150,6 +146,81 @@ components.schemas.User:
     address:
       $ref: '#/components.schemas.Address'
 ```
+which will generate two classes: 1. a data class `User`; and 2. a `UserBuilder`.
+
+The class will have the following structure
+```kotlin
+data class User(
+    @Json(name = "firstname") var firstname: String,
+    @Json(name = "lastname") var lastname: String,
+    @Json(name = "age") var age: Int,
+    @Json(name = "address") var address: Address,
+    @Json(name = "gender") var gender: Gender?) {
+
+    companion object {
+        fun of(transform: UserBuilder.() -> UserBuilder = { UserBuilder() }): User {
+            return transform(UserBuilder())()
+        }
+    }
+}
+```
+It consists of a mutable field for each property in the schema. And an
+`of` function. This method can be used to invoke the builder in a more user-friendly manner.
+For example
+```kotlin
+User.of {
+    firstname { constant { "Jane" } }
+}
+```
+will generate a `User` with random properties within the constaints of
+the API and `firstname` set to `"Jane"`.
+
+```kotlin
+class UserBuilder : BuilderDsl<User> {
+
+    private var firstname = StringBuilder().min(1)
+    private var lastname = StringBuilder().min(1).max(30)
+    private var age = IntBuilder().min(0)
+    private var address = AddressBuilder()
+    private var gender = GenderBuilder()
+
+    override operator fun invoke(): User {
+        return User(
+            firstname = firstname.invoke(),
+            lastname = lastname.invoke(),
+            age = age.invoke(),
+            address = address.invoke(),
+            gender = gender.invoke()
+        )
+    }
+
+    fun firstname(transform: StringBuilder.() -> StringBuilder = { StringBuilder() }): UserBuilder {
+        firstname = transform(StringBuilder())
+        return this
+    }
+
+    fun lastname(transform: StringBuilder.() -> StringBuilder = { StringBuilder() }): UserBuilder {
+        lastname = transform(StringBuilder())
+        return this
+    }
+
+    fun age(transform: IntBuilder.() -> IntBuilder = { IntBuilder() }): UserBuilder {
+        age = transform(IntBuilder())
+        return this
+    }
+
+    fun address(transform: AddressBuilder.() -> AddressBuilder = { AddressBuilder() }): UserBuilder {
+        address = transform(AddressBuilder())
+        return this
+    }
+
+    fun gender(transform: GenderBuilder.() -> GenderBuilder = { GenderBuilder() }): UserBuilder {
+        gender = transform(GenderBuilder())
+        return this
+    }
+}
+```
+
 with a gender as
 ```yaml
 components.schemas.Gender:
