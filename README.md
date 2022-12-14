@@ -226,6 +226,7 @@ class UserBuilder : BuilderDsl<User> {
 where the default value for each property is a random value within the 
 constraints of the API.
 
+#### Enums
 There is support for enums. We define the gender of an user as
 ```yaml
 components.schemas.Gender:
@@ -259,6 +260,7 @@ class GenderBuilder: EnumBuilder<Gender>() {
 }
 ```
 
+#### Nested Types
 and an address as
 ```yaml
 components.schemas.Address:
