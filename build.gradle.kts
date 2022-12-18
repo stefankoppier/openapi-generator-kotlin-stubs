@@ -23,6 +23,8 @@ plugins {
     id("maven-publish")
     alias(libraries.plugins.kotlin)
     alias(libraries.plugins.spotless)
+    alias(libraries.plugins.use.latest.versions)
+    alias(libraries.plugins.versions)
 }
 
 dependencies {

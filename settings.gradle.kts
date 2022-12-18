@@ -6,6 +6,8 @@ dependencyResolutionManagement {
             plugin("kotlin", "org.jetbrains.kotlin.jvm").version("1.7.21")
             plugin("spotless", "com.diffplug.spotless").version("6.12.0")
             plugin("openapi-generator", "org.openapi.generator").version("6.2.1")
+            plugin("use-latest-versions", "se.patrikerdes.use-latest-versions").version("0.2.18")
+            plugin("versions", "com.github.ben-manes.versions").version("0.41.0")
 
             library("openapi-generator", "org.openapitools", "openapi-generator").version("6.2.1")
             library("kotlin-test", "org.jetbrains.kotlin", "kotlin-test").version("1.7.22")
@@ -15,7 +17,6 @@ dependencyResolutionManagement {
             library("kotlin-builder-dsl", "io.github.stefankoppier", "kotlin-builder-dsl").version("0.0.2")
 
             library("rest-assured", "io.rest-assured", "kotlin-extensions").version("5.3.0")
-//            kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
         }
     }
 }
