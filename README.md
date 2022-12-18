@@ -1,5 +1,12 @@
 # OpenAPI generator kotlin-stubs
-Generate Kotlin [WireMock](https://wiremock.org/) stubs from an OpenAPI specification.
+Generate Kotlin [WireMock](https://wiremock.org/) stubs from an OpenAPI specification. 
+
+### Functionality
+The generator will generate:
+- Stubbing interfaces for each operation.
+- Stub builders for each possible response of each operation, which are injected in WireMock.
+- Models for each schema.
+- Builders which generate can generate these models with i.e. random data within the constraints of the API.
 
 ## Usage with Gradle
 First, add the dependency to the classpath of which OpenAPI generator executes
@@ -107,6 +114,30 @@ components.operations.User:
             schema:
               $ref: '#/components.schemas.User'
 ```
+
+This will generate a class `DefaultApiStub` with a stub for each operation. 
+For example, the `/users` GET operation will generate 
+```kotlin
+fun userUserIdGet(userId: kotlin.Int, withAge: StringValuePattern = AnythingPattern()): UserUserIdGetStubBuilder {
+    val path = parameterized("/user/{userId}", userId)
+    return UserUserIdGetStubBuilder(WireMock.get(path)
+        .withQueryParam("withAge", withAge)
+    )
+}
+
+class UserUserIdGetStubBuilder internal constructor(stub: MappingBuilder) : AbstractStubBuilder(stub) {
+    
+    fun ok(body: User) {
+        val adapter = moshi.adapter(User::class.java)
+        stubFor(stub.willReturn(WireMock.status(200).withBody(adapter.toJson(body))))
+    }
+
+    fun notFound() {
+        stubFor(stub.willReturn(WireMock.status(404)))
+    }
+}
+```
+which can be used as e.g. `stub.userUerIdGet(-1).notFound()`.
 
 ## Responses
 The response of the `/users` is defined as 
