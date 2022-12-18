@@ -30,12 +30,12 @@ plugins {
 dependencies {
     implementation(libraries.openapi.generator)
 
-    testImplementation(libraries.kotlin.test.get())
-    testImplementation(libraries.mockito.kotlin.get())
-    testImplementation(libraries.wiremock.get())
-    testImplementation(libraries.moshi.kotlin.get())
-    testImplementation(libraries.kotlin.builder.dsl.get())
-    testImplementation(libraries.rest.assured.get())
+    testImplementation(libraries.kotlin.test)
+    testImplementation(libraries.mockito.kotlin)
+    testImplementation(libraries.wiremock)
+    testImplementation(libraries.moshi.kotlin)
+    testImplementation(libraries.kotlin.builder.dsl)
+    testImplementation(libraries.rest.assured)
 }
 
 publishing {
@@ -48,7 +48,6 @@ publishing {
                 name.set("$group:$repository")
                 description.set("Generate WireMock stubs in Kotlin from an OpenAPI specification")
                 url.set("https://$github")
-
 
                 developers {
                     developer {
