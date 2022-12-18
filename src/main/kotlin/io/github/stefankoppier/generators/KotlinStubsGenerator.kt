@@ -17,9 +17,7 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
 
     override fun getName() = "kotlin-stubs"
 
-    override fun getHelp(): String {
-        return "Generates Wiremock stubs written in Kotlin."
-    }
+    override fun getHelp() = "Generates Wiremock stubs written in Kotlin."
 
     init {
         outputFolder = "generated-code/generator"
@@ -39,7 +37,7 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
     override fun processOpts() {
         super.processOpts()
 
-        val folder = (sourceFolder + File.separator + apiPackage + ".internal").replace(".", File.separator)
+        val folder = "$sourceFolder.$apiPackage.internal".replace(".", File.separator)
         supportingFiles.addAll(
             arrayOf(
                 SupportingFile("internal-abstract-stub-builder.mustache", folder, "AbstractStubBuilder.kt"),
@@ -53,18 +51,12 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
 
     override fun postProcessAllModels(objects: MutableMap<String, ModelsMap>): MutableMap<String, ModelsMap> {
         super.postProcessAllModels(objects).forEach { obj ->
-            obj.value.models.forEach { model: ModelMap ->
+            obj.value.models.forEach { model ->
                 model.model.vars.forEach { variable ->
-                    assignDataTypes(
-                        variable.dataType,
-                        object : DataTypeAssigner {
-                            override fun setReturnType(type: String) {
-                                variable.dataType = type
-                            }
-                            override fun setReturnContainer(type: String) {
-                                variable.containerType = type
-                            }
-                        })
+                    normalize(
+                        type = variable.dataType,
+                        element = { type -> variable.dataType = type },
+                        container = { type -> variable.containerType = type })
                 }
             }
         }
@@ -74,27 +66,15 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
     override fun postProcessOperationsWithModels(objects: OperationsMap, allModels: List<ModelMap>): OperationsMap {
         objects.operations.operation.forEach { operation ->
             operation.responses.forEach { response ->
-                assignDataTypes(
-                    response.dataType,
-                    object : DataTypeAssigner {
-                        override fun setReturnType(type: String) {
-                            response.dataType = type
-                        }
-                        override fun setReturnContainer(type: String) {
-                            response.containerType = type
-                        }
-                    })
+                normalize(
+                    type = response.dataType,
+                    element = { type -> response.dataType = type },
+                    container = { type -> response.containerType = type })
             }
-            assignDataTypes(
-                operation.returnType,
-                object : DataTypeAssigner {
-                    override fun setReturnType(type: String) {
-                        operation.returnType = type
-                    }
-                    override fun setReturnContainer(type: String) {
-                        operation.returnContainer = type
-                    }
-                })
+            normalize(
+                type = operation.returnType,
+                element = { type -> operation.returnType = type },
+                container = { type -> operation.returnContainer = type })
         }
         return objects
     }
@@ -111,30 +91,5 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
         println("#                                                                                   #")
         println("# This generator's contributed by Stefan Koppier (https://github.com/StefanKoppier) #")
         println("#####################################################################################")
-    }
-
-    interface DataTypeAssigner {
-        fun setReturnType(type: String)
-
-        fun setReturnContainer(type: String)
-    }
-
-    private fun assignDataTypes(type: String?, assigner: DataTypeAssigner) {
-        if (type == null) {
-            assigner.setReturnType("Unit")
-        } else if (type.startsWith("kotlin.collections.List")) {
-            val end = type.lastIndexOf(">")
-            if (end > 0) {
-                val returnType = type.substring("kotlin.collections.List<".length, end).trim()
-                assigner.setReturnType(removePackageName(returnType))
-                assigner.setReturnContainer("List")
-            }
-        } else {
-            assigner.setReturnType(removePackageName(type))
-        }
-    }
-
-    private fun removePackageName(type: String): String {
-        return if (type.contains('.')) type.substring(type.lastIndexOf('.') + 1).trim() else type
     }
 }
