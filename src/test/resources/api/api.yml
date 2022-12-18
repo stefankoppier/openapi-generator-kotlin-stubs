@@ -1,0 +1,8 @@
+openapi: 3.0.3
+info:
+  title: Test API
+  version: 0.0.1
+
+paths:
+  /item:
+    $ref: './components/paths/item.yml#/Item'

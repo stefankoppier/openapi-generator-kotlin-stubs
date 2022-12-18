@@ -2,6 +2,18 @@ val repository = "openapi-generator-kotlin-stubs"
 val organization = "stefankoppier"
 val github = "github.com/$organization/$repository"
 
+group = "io.github.stefankoppier"
+version = "0.0.1"
+
+buildscript {
+    dependencies {
+        classpath(fileTree("$buildDir/libs/"))
+    }
+
+    plugins {
+        alias(libraries.plugins.openapi.generator)
+    }
+}
 repositories {
     mavenCentral()
 }
@@ -13,11 +25,15 @@ plugins {
     alias(libraries.plugins.spotless)
 }
 
-group = "io.github.stefankoppier"
-version = "0.0.1"
-
 dependencies {
     implementation(libraries.openapi.generator)
+
+    testImplementation(libraries.kotlin.test.get())
+    testImplementation(libraries.mockito.kotlin.get())
+    testImplementation(libraries.wiremock.get())
+    testImplementation(libraries.moshi.kotlin.get())
+    testImplementation(libraries.kotlin.builder.dsl.get())
+    testImplementation(libraries.rest.assured.get())
 }
 
 publishing {
@@ -66,7 +82,24 @@ publishing {
 spotless {
     kotlin {
         ktfmt().dropboxStyle().configure { options ->
+            targetExclude("$buildDir/generated/src/main/kotlin/**/*.*")
             options.setMaxWidth(120)
         }
     }
 }
+
+openApiGenerate {
+    generatorName.set("kotlin-stubs")
+    inputSpec.set("$rootDir/src/test/resources/api/api.yml")
+    apiPackage.set("io.github.stefankoppier.generators.test")
+    outputDir.set("$buildDir/generated")
+    modelPackage.set("io.github.stefankoppier.generators.test.models")
+}
+
+sourceSets {
+    test {
+        kotlin.srcDir("$buildDir/generated/src/main/kotlin")
+    }
+}
+
+tasks.findByName("openApiGenerate")?.finalizedBy(tasks.findByName("spotlessApply"))

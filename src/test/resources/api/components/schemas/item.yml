@@ -1,0 +1,16 @@
+Item:
+  type: object
+  properties:
+    bigdecimal:
+      type: number
+    float:
+      type: number
+      format: float
+    double:
+      type: number
+      format: double
+    integer:
+      type: integer
+    long:
+      type: integer
+      format: int64
