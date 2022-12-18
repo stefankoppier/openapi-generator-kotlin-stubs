@@ -51,30 +51,15 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
 
     override fun postProcessAllModels(objects: MutableMap<String, ModelsMap>): MutableMap<String, ModelsMap> {
         super.postProcessAllModels(objects).forEach { obj ->
-            obj.value.models.forEach { model ->
-                model.model.vars.forEach { variable ->
-                    normalize(
-                        type = variable.dataType,
-                        element = { type -> variable.dataType = type },
-                        container = { type -> variable.containerType = type })
-                }
-            }
+            obj.value.models.forEach { model -> model.model.vars.forEach(CodegenProperty::normalize) }
         }
         return super.postProcessAllModels(objects)
     }
 
     override fun postProcessOperationsWithModels(objects: OperationsMap, allModels: List<ModelMap>): OperationsMap {
         objects.operations.operation.forEach { operation ->
-            operation.responses.forEach { response ->
-                normalize(
-                    type = response.dataType,
-                    element = { type -> response.dataType = type },
-                    container = { type -> response.containerType = type })
-            }
-            normalize(
-                type = operation.returnType,
-                element = { type -> operation.returnType = type },
-                container = { type -> operation.returnContainer = type })
+            operation.responses.forEach<CodegenResponse>(CodegenResponse::normalize)
+            operation.normalize()
         }
         return objects
     }
