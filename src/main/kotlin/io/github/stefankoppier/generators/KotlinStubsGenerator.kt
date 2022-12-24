@@ -40,8 +40,8 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
         val folder = "$sourceFolder.$apiPackage.internal".replace(".", File.separator)
         supportingFiles.addAll(
             arrayOf(
-                SupportingFile("internal-abstract-stub-builder.mustache", folder, "AbstractStubBuilder.kt"),
-                SupportingFile("internal-abstract-stub.mustache", folder, "AbstractStub.kt"),
+                SupportingFile("internal/abstract-stub-builder.mustache", folder, "AbstractStubBuilder.kt"),
+                SupportingFile("internal/abstract-stub.mustache", folder, "AbstractStub.kt"),
             ))
     }
 
