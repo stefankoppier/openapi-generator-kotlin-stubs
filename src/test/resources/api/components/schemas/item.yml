@@ -19,3 +19,6 @@ Item:
     uri:
       type: string
       format: uri
+    date:
+      type: string
+      format: date

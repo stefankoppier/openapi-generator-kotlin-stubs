@@ -5,13 +5,14 @@ import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.math.BigDecimal
-import java.net.HttpURLConnection.*
 import java.net.URI
+import java.time.LocalDate
 
 abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
     protected val moshi: Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .add(BigDecimal::class.java, BigDecimalAdapter())
+        .add(LocalDate::class.java, LocalDateAdapter())
         .add(URI::class.java, URIAdapter())
         .build()
 

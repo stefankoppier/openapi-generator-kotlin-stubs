@@ -11,6 +11,7 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import java.math.BigDecimal
 import java.net.URI
+import java.time.LocalDate
 import kotlin.test.*
 
 private object BigDecimalAdapter {
@@ -23,11 +24,22 @@ private object URIAdatapter {
     @ToJson fun toJson(value: URI) = value.toString()
 }
 
+private object LocalDateAdapter {
+    @FromJson fun fromJson(string: String) = LocalDate.parse(string)
+    @ToJson fun toJson(value: LocalDate) = value.toString()
+}
+
 class ItemGenerationTest {
 
     private val wiremock = WireMockServer(8080)
 
-    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).add(BigDecimalAdapter).add(URIAdatapter).build()
+    private val moshi =
+        Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .add(BigDecimalAdapter)
+            .add(URIAdatapter)
+            .add(LocalDateAdapter)
+            .build()
 
     private var stub = DefaultApiStub()
 
