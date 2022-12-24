@@ -12,6 +12,7 @@ import io.restassured.module.kotlin.extensions.When
 import java.math.BigDecimal
 import java.net.URI
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import kotlin.test.*
 
 private object BigDecimalAdapter {
@@ -29,6 +30,11 @@ private object LocalDateAdapter {
     @ToJson fun toJson(value: LocalDate) = value.toString()
 }
 
+private object OffsetDateTimeAdapter {
+    @FromJson fun fromJson(string: String) = OffsetDateTime.parse(string)
+    @ToJson fun toJson(value: OffsetDateTime) = value.toString()
+}
+
 class ItemGenerationTest {
 
     private val wiremock = WireMockServer(8080)
@@ -39,6 +45,7 @@ class ItemGenerationTest {
             .add(BigDecimalAdapter)
             .add(URIAdatapter)
             .add(LocalDateAdapter)
+            .add(OffsetDateTimeAdapter)
             .build()
 
     private var stub = DefaultApiStub()

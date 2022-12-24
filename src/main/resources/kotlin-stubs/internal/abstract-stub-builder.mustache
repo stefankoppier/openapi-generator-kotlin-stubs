@@ -7,12 +7,14 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.math.BigDecimal
 import java.net.URI
 import java.time.LocalDate
+import java.time.OffsetDateTime
 
 abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
     protected val moshi: Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .add(BigDecimal::class.java, BigDecimalAdapter())
         .add(LocalDate::class.java, LocalDateAdapter())
+        .add(OffsetDateTime::class.java, OffsetDateTimeAdapter())
         .add(URI::class.java, URIAdapter())
         .build()
 

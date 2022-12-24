@@ -22,3 +22,6 @@ Item:
     date:
       type: string
       format: date
+    datetime:
+      type: string
+      format: date-time

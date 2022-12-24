@@ -2,6 +2,7 @@ import io.github.stefankoppier.generators.test.models.Item
 import java.math.BigDecimal
 import java.net.URI
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -19,9 +20,20 @@ class ItemModelTest {
                 string { constant("string") }
                 uri { constant(URI("https://localhost")) }
                 date { constant(LocalDate.EPOCH) }
+                datetime { constant(OffsetDateTime.MAX) }
             }
 
-        val expected = Item(BigDecimal.ONE, 2.0f, 3.0, 4, 5L, "string", URI("https://localhost"), LocalDate.EPOCH)
+        val expected =
+            Item(
+                BigDecimal.ONE,
+                2.0f,
+                3.0,
+                4,
+                5L,
+                "string",
+                URI("https://localhost"),
+                LocalDate.EPOCH,
+                OffsetDateTime.MAX)
 
         assertEquals(expected, item)
     }
