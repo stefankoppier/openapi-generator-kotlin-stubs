@@ -1,7 +1,5 @@
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.ToJson
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.stefankoppier.generators.test.DefaultApiStub
 import io.github.stefankoppier.generators.test.models.Item
@@ -9,31 +7,7 @@ import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
-import java.math.BigDecimal
-import java.net.URI
-import java.time.LocalDate
-import java.time.OffsetDateTime
 import kotlin.test.*
-
-private object BigDecimalAdapter {
-    @FromJson fun fromJson(string: String) = BigDecimal(string)
-    @ToJson fun toJson(value: BigDecimal) = value.toString()
-}
-
-private object URIAdatapter {
-    @FromJson fun fromJson(string: String) = URI(string)
-    @ToJson fun toJson(value: URI) = value.toString()
-}
-
-private object LocalDateAdapter {
-    @FromJson fun fromJson(string: String) = LocalDate.parse(string)
-    @ToJson fun toJson(value: LocalDate) = value.toString()
-}
-
-private object OffsetDateTimeAdapter {
-    @FromJson fun fromJson(string: String) = OffsetDateTime.parse(string)
-    @ToJson fun toJson(value: OffsetDateTime) = value.toString()
-}
 
 class ItemGenerationTest {
 

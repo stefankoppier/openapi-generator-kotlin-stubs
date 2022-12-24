@@ -20,6 +20,7 @@ repositories {
 
 plugins {
     id("java")
+    id("java-test-fixtures")
     id("maven-publish")
     alias(libraries.plugins.kotlin)
     alias(libraries.plugins.spotless)
@@ -29,6 +30,8 @@ plugins {
 
 dependencies {
     implementation(libraries.openapi.generator)
+
+    testFixturesImplementation(libraries.moshi.kotlin)
 
     testImplementation(libraries.kotlin.test)
     testImplementation(libraries.mockito.kotlin)
