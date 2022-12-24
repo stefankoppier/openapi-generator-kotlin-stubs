@@ -20,8 +20,8 @@ abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
      *
      * @param code The http response code.
      */
-    fun status(status: Int) {
-        stubFor(stub.willReturn(WireMock.status(status)))
+    fun status(code: Int) {
+        stubFor(stub.willReturn(WireMock.status(code)))
     }
 
     /**
