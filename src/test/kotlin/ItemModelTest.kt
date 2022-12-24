@@ -14,9 +14,10 @@ class ItemModelTest {
                 double { constant(3.0) }
                 integer { constant(4) }
                 long { constant(5L) }
+                string { constant("string") }
             }
 
-        val expected = Item(BigDecimal.ONE, 2.0f, 3.0, 4, 5L)
+        val expected = Item(BigDecimal.ONE, 2.0f, 3.0, 4, 5L, "string")
 
         assertEquals(expected, item)
     }

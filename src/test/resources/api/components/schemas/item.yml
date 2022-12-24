@@ -14,3 +14,5 @@ Item:
     long:
       type: integer
       format: int64
+    string:
+      type: string
