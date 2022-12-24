@@ -11,15 +11,10 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.math.BigDecimal
 import java.net.HttpURLConnection.*
 
-private object BigDecimalAdapter {
-    @FromJson fun fromJson(string: String) = BigDecimal(string)
-    @ToJson fun toJson(value: BigDecimal) = value.toString()
-}
-
 abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
     protected val moshi: Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
-        .add(BigDecimalAdapter)
+        .add(BigDecimal::class.java, BigDecimalAdapter())
         .build()
 
     /**

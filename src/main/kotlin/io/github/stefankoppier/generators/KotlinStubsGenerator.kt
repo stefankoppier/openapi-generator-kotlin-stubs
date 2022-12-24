@@ -42,6 +42,7 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
             arrayOf(
                 SupportingFile("internal/abstract-stub-builder.mustache", folder, "AbstractStubBuilder.kt"),
                 SupportingFile("internal/abstract-stub.mustache", folder, "AbstractStub.kt"),
+                SupportingFile("internal/moshi-adapters.mustache", folder, "MoshiAdapters.kt"),
             ))
     }
 
