@@ -16,3 +16,6 @@ Item:
       format: int64
     string:
       type: string
+    uri:
+      type: string
+      format: uri

@@ -2,6 +2,7 @@ package {{apiPackage}}.internal
 
 import com.squareup.moshi.*
 import java.math.BigDecimal
+import java.net.URI
 
 internal class BigDecimalAdapter : JsonAdapter<BigDecimal>() {
     override fun fromJson(reader: JsonReader): BigDecimal? {
@@ -12,6 +13,23 @@ internal class BigDecimalAdapter : JsonAdapter<BigDecimal>() {
     }
 
     override fun toJson(writer: JsonWriter, value: BigDecimal?) {
+        if (value == null) {
+            writer.nullValue()
+        } else {
+            writer.value(value.toString())
+        }
+    }
+}
+
+internal class URIAdapter : JsonAdapter<URI>() {
+    override fun fromJson(reader: JsonReader): URI? {
+        if (reader.peek() == JsonReader.Token.NULL) {
+            return reader.nextNull()
+        }
+        return URI(reader.nextString())
+    }
+
+    override fun toJson(writer: JsonWriter, value: URI?) {
         if (value == null) {
             writer.nullValue()
         } else {

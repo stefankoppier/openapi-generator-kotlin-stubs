@@ -1,20 +1,18 @@
 package {{apiPackage}}.internal
 
-import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.stubFor
-import com.squareup.moshi.FromJson
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.ToJson
+import com.github.tomakehurst.wiremock.client.*
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.math.BigDecimal
 import java.net.HttpURLConnection.*
+import java.net.URI
 
 abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
     protected val moshi: Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .add(BigDecimal::class.java, BigDecimalAdapter())
+        .add(URI::class.java, URIAdapter())
         .build()
 
     /**

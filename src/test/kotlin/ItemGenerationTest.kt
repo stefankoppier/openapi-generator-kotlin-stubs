@@ -10,6 +10,7 @@ import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import java.math.BigDecimal
+import java.net.URI
 import kotlin.test.*
 
 private object BigDecimalAdapter {
@@ -17,11 +18,16 @@ private object BigDecimalAdapter {
     @ToJson fun toJson(value: BigDecimal) = value.toString()
 }
 
+private object URIAdatapter {
+    @FromJson fun fromJson(string: String) = URI(string)
+    @ToJson fun toJson(value: URI) = value.toString()
+}
+
 class ItemGenerationTest {
 
     private val wiremock = WireMockServer(8080)
 
-    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).add(BigDecimalAdapter).build()
+    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).add(BigDecimalAdapter).add(URIAdatapter).build()
 
     private var stub = DefaultApiStub()
 
