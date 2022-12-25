@@ -16,7 +16,7 @@ enum class {{classname}}(val value: String) {
     }
 }
 
-class {{classname}}Builder: EnumBuilder<{{classname}}>() {
+class {{classname}}Builder: EnumBuilder<{{classname}}, {{classname}}Builder>() {
 
     override fun allValues(): Array<{{classname}}> {
         return {{classname}}.values()

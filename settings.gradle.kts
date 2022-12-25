@@ -14,7 +14,7 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin", "mockito-kotlin").version("4.1.0")
             library("wiremock", "com.github.tomakehurst", "wiremock-jre8").version("2.35.0")
             library("moshi-kotlin", "com.squareup.moshi", "moshi-kotlin").version("1.14.0")
-            library("kotlin-builder-dsl", "io.github.stefankoppier", "kotlin-builder-dsl").version("0.0.2")
+            library("kotlin-builder-dsl", "io.github.stefankoppier", "kotlin-builder-dsl").version("0.0.3")
 
             library("rest-assured", "io.rest-assured", "kotlin-extensions").version("5.3.0")
         }

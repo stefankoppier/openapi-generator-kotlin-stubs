@@ -1,3 +1,4 @@
+import io.github.stefankoppier.generators.test.models.Enumeration
 import io.github.stefankoppier.generators.test.models.Item
 import java.math.BigDecimal
 import java.net.URI
@@ -21,6 +22,8 @@ class ItemModelTest {
                 uri { constant(URI("https://localhost")) }
                 date { constant(LocalDate.EPOCH) }
                 datetime { constant(OffsetDateTime.MAX) }
+                enumeration { constant(Enumeration.FIRST) }
+                collection { constant(listOf(1, 2)) }
             }
 
         val expected =
@@ -33,7 +36,9 @@ class ItemModelTest {
                 "string",
                 URI("https://localhost"),
                 LocalDate.EPOCH,
-                OffsetDateTime.MAX)
+                OffsetDateTime.MAX,
+                Enumeration.FIRST,
+                listOf(1, 2))
 
         assertEquals(expected, item)
     }

@@ -1,0 +1,5 @@
+Enumeration:
+  type: string
+  enum:
+    - FIRST
+    - SECOND

@@ -25,3 +25,9 @@ Item:
     datetime:
       type: string
       format: date-time
+    enumeration:
+      $ref: './enumeration.yml#/Enumeration'
+    collection:
+      type: array
+      items:
+        type: integer
