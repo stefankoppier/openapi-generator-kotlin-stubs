@@ -57,7 +57,7 @@ publishing {
                         id.set(organization)
                         name.set("Stefan Koppier")
                         email.set("stefan.koppier@outlook.com")
-                        url.set("https://github.com/StefanKoppier")
+                        url.set("https://github.com/stefankoppier")
                     }
                 }
 

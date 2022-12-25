@@ -9,7 +9,7 @@ import java.net.URI
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
-abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
+abstract class AbstractStubBuilder(protected val wiremock: WireMock, protected val stub: MappingBuilder) {
     protected val moshi: Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .add(BigDecimal::class.java, BigDecimalAdapter())
@@ -24,7 +24,7 @@ abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
      * @param code The http response code.
      */
     fun status(code: Int) {
-        stubFor(stub.willReturn(WireMock.status(code)))
+        wiremock.register(stub.willReturn(WireMock.status(code)))
     }
 
     /**
@@ -33,6 +33,6 @@ abstract class AbstractStubBuilder(protected val stub: MappingBuilder) {
      * @param builder The stub to inject.
      */
     fun response(builder: ResponseDefinitionBuilder) {
-        stubFor(stub.willReturn(builder))
+        wiremock.register(stub.willReturn(builder))
     }
 }

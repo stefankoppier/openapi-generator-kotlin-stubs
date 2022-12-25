@@ -11,7 +11,7 @@ import kotlin.test.*
 
 class ItemGenerationTest {
 
-    private val wiremock = WireMockServer(8080)
+    private val wiremock = WireMockServer(8083)
 
     private val moshi =
         Moshi.Builder()
@@ -22,7 +22,7 @@ class ItemGenerationTest {
             .add(OffsetDateTimeAdapter)
             .build()
 
-    private var stub = DefaultApiStub()
+    private var stub = DefaultApiStub("localhost", 8083)
 
     @BeforeTest
     fun setup() {
@@ -50,7 +50,7 @@ class ItemGenerationTest {
 
     private fun assertIs200WithBody(expected: Item) {
         val body =
-            Given { port(8080) } When { get("/item") } Then { statusCode(200) } Extract { response().body.print() }
+            Given { port(8083) } When { get("/item") } Then { statusCode(200) } Extract { response().body.print() }
 
         assertEquals(expected, moshi.adapter(Item::class.java).fromJson(body))
     }

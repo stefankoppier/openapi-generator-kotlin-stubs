@@ -1,7 +1,13 @@
 package {{apiPackage}}.internal
 
-abstract class AbstractStub() {
-    protected fun parameterized(url: String, vararg parameters: Any): String { // TODO: fix the regex to any http encoded string
+import com.github.tomakehurst.wiremock.client.WireMock
+
+abstract class AbstractStub(host: String, port: Int) {
+
+    protected val wiremock: WireMock = WireMock(host, port)
+
+    // TODO: fix the regex to any http encoded string
+    protected fun parameterized(url: String, vararg parameters: Any): String {
         return parameters.fold(url) { acc, parameter -> acc.replaceFirst(Regex("\\{[a-zA-Z\\-_]+\\}"), parameter.toString()) }
     }
 }

@@ -75,7 +75,7 @@ class KotlinStubsGenerator : AbstractKotlinCodegen(), CodegenConfig {
         println("# Please consider donation to help us maintain this project                         #")
         println("# https://opencollective.com/openapi_generator/donate                               #")
         println("#                                                                                   #")
-        println("# This generator's contributed by Stefan Koppier (https://github.com/StefanKoppier) #")
+        println("# This generator's contributed by Stefan Koppier (https://github.com/stefankoppier) #")
         println("#####################################################################################")
     }
 }

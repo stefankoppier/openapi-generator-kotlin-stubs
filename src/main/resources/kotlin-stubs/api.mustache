@@ -21,7 +21,7 @@ import {{import}}
  * This class can generate stubs and inject these in WireMock for the supported HTTP methods of the path with the
  * corresponding status codes.
  */
-class {{classname}}Stub : AbstractStub() {
+class {{classname}}Stub(host: String = "localhost", port: Int = 8080) : AbstractStub(host, port) {
 {{#operation}}
 
     /**
@@ -40,7 +40,7 @@ class {{classname}}Stub : AbstractStub() {
     {{/isDeprecated}}
     fun {{operationId}}({{>api-stub-builder-parameters}}): {{>api-stub-builder-type}} {
         val path = parameterized("{{path}}"{{#pathParams}}{{^last}}, {{/last}}{{paramName}}{{/pathParams}})
-        return {{>api-stub-builder-type}}(WireMock.{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}(path)
+        return {{>api-stub-builder-type}}(wiremock, WireMock.{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}(path)
         {{#queryParams}}
             .withQueryParam("{{paramName}}", {{paramName}})
         {{/queryParams}})
@@ -50,7 +50,8 @@ class {{classname}}Stub : AbstractStub() {
     {{#isDeprecated}}
     @Deprecated(message = "This operation has been deprecated")
     {{/isDeprecated}}
-    class {{>api-stub-builder-type}} internal constructor(stub: MappingBuilder) : AbstractStubBuilder(stub) {
+    class {{>api-stub-builder-type}} internal constructor(wiremock: WireMock, stub: MappingBuilder)
+        : AbstractStubBuilder(wiremock, stub) {
     {{#responses}}
 
         {{^isDefault}}
@@ -65,7 +66,8 @@ class {{classname}}Stub : AbstractStub() {
             {{#baseType}}
             {{#lambda.indented_12}}{{>api-stub-builder-adapter}}{{/lambda.indented_12}}
             {{/baseType}}
-            stubFor(stub.willReturn(WireMock.status({{code}}){{#baseType}}.withBody(adapter.toJson(body)){{/baseType}}))
+            val mapping = stub.willReturn(WireMock.status({{code}}){{#baseType}}.withBody(adapter.toJson(body)){{/baseType}})
+            wiremock.register(mapping)
         }
         {{/isDefault}}
         {{#isDefault}}
@@ -78,7 +80,8 @@ class {{classname}}Stub : AbstractStub() {
          */
         fun response(code: Int, body: {{>api-stub-builder-result-type}}) {
             {{#lambda.indented_12}}{{>api-stub-builder-adapter}}{{/lambda.indented_12}}
-            stubFor(stub.willReturn(WireMock.status(code).withBody(adapter.toJson(body))))
+            val mapping = stub.willReturn(WireMock.status(code).withBody(adapter.toJson(body)))
+            wiremock.register(mapping)
         }
         {{/baseType}}
         {{/isDefault}}
