@@ -4,5 +4,7 @@ info:
   version: 0.0.1
 
 paths:
+  /items/{id}:
+    $ref: './components/paths/items.yml#/Items'
   /item:
     $ref: './components/paths/item.yml#/Item'

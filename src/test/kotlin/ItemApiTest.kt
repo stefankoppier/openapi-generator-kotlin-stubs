@@ -9,7 +9,7 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import kotlin.test.*
 
-class ItemGenerationTest {
+class ItemApiTest {
 
     private val wiremock = WireMockServer(8083)
 
@@ -35,7 +35,7 @@ class ItemGenerationTest {
     }
 
     @Test
-    fun `stub has 'items GET'`() {
+    fun `stub has 'item GET'`() {
         assertIs<DefaultApiStub.ItemGetStubBuilder>(stub.itemGet())
     }
 

@@ -1,0 +1,24 @@
+Items:
+  get:
+    tags:
+      - items
+    parameters:
+      - in: path
+        name: id
+        description: The id of the item to retrieve.
+        schema:
+          type: integer
+        required: true
+    responses:
+      '200':
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/item.yml#/Item'
+      '404':
+        content:
+          application/json:
+            schema:
+              type: string
