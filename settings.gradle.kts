@@ -11,6 +11,7 @@ dependencyResolutionManagement {
 
             library("openapi-generator", "org.openapitools", "openapi-generator").version("6.2.1")
             library("kotlin-test", "org.jetbrains.kotlin", "kotlin-test").version("1.7.22")
+            library("junit-params", "org.junit.jupiter", "junit-jupiter-params").version("5.9.1")
             library("mockito-kotlin", "org.mockito.kotlin", "mockito-kotlin").version("4.1.0")
             library("wiremock", "com.github.tomakehurst", "wiremock-jre8").version("2.35.0")
             library("moshi-kotlin", "com.squareup.moshi", "moshi-kotlin").version("1.14.0")

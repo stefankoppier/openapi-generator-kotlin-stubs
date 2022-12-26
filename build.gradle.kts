@@ -34,6 +34,7 @@ dependencies {
     testFixturesImplementation(libraries.moshi.kotlin)
 
     testImplementation(libraries.kotlin.test)
+    testImplementation(libraries.junit.params)
     testImplementation(libraries.mockito.kotlin)
     testImplementation(libraries.wiremock)
     testImplementation(libraries.moshi.kotlin)
@@ -81,6 +82,10 @@ publishing {
             }
         }
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 spotless {

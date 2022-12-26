@@ -45,13 +45,11 @@ class ItemApiTest {
 
         stub.itemGet().ok(item)
 
-        assertIs200WithBody(item)
+        val body = extract()
+        assertEquals(item, moshi.adapter(Item::class.java).fromJson(body))
     }
 
-    private fun assertIs200WithBody(expected: Item) {
-        val body =
-            Given { port(8083) } When { get("/item") } Then { statusCode(200) } Extract { response().body.print() }
-
-        assertEquals(expected, moshi.adapter(Item::class.java).fromJson(body))
+    private fun extract(): String {
+        return Given { port(8083) } When { get("/item") } Then { statusCode(200) } Extract { response().body.print() }
     }
 }

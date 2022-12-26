@@ -10,6 +10,8 @@ import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import kotlin.test.*
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
 class ItemsApiTest {
 
@@ -47,8 +49,7 @@ class ItemsApiTest {
 
         stub.itemsIdGet(0).ok(listOf(item))
 
-        val body =
-            Given { port(8080) } When { get("/items/0") } Then { statusCode(200) } Extract { response().body.print() }
+        val body = extract(200)
         val type = (Types.newParameterizedType(List::class.java, Item::class.java))
         val adapter: JsonAdapter<List<Item>> = moshi.adapter(type)
         assertEquals(listOf(item), adapter.fromJson(body))
@@ -58,8 +59,29 @@ class ItemsApiTest {
     fun `stub 'items GET not found' calls WireMock`() {
         stub.itemsIdGet(0).notFound("Not found")
 
-        val body =
-            Given { port(8080) } When { get("/items/0") } Then { statusCode(404) } Extract { response().body.print() }
+        val body = extract(404)
         assertEquals("Not found", moshi.adapter(String::class.java).fromJson(body))
+    }
+
+    @ParameterizedTest
+    @CsvSource("500", "501", "502")
+    fun `stub 'items GET default' calls WireMock`(code: String) {
+        stub.itemsIdGet(0).response(code.toInt(), code)
+
+        val body = extract(code.toInt())
+        assertEquals(code, moshi.adapter(String::class.java).fromJson(body))
+    }
+
+    private fun extract(code: Int): String {
+        return Given { port(8080) } When
+            {
+                get("/items/0")
+            } Then
+            {
+                statusCode(code)
+            } Extract
+            {
+                response().body.print()
+            }
     }
 }
